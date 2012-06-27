@@ -475,6 +475,8 @@ ServerConfig::setConfigItem(const char* tag, const char* value)
 	requeueTTS[ClassModem::NOFCON] = getNumber(value);
     else if (streq(tag, "jobreqdataconn"))
 	requeueTTS[ClassModem::DATACONN] = getNumber(value);
+    else if (streq(tag, "jobreqerror"))
+	requeueTTS[ClassModem::ERROR] = getNumber(value);
     else if (streq(tag, "nocarrierretrys"))
 	retryMAX[ClassModem::NOCARRIER] = getNumber(value);
     else if (streq(tag, "jobretrybusy"))
@@ -487,6 +489,8 @@ ServerConfig::setConfigItem(const char* tag, const char* value)
 	retryMAX[ClassModem::NOFCON] = getNumber(value);
     else if (streq(tag, "jobretrydataconn"))
 	retryMAX[ClassModem::DATACONN] = getNumber(value);
+    else if (streq(tag, "jobretryerror"))
+	retryMAX[ClassModem::ERROR] = getNumber(value);
     else
 	return ModemConfig::setConfigItem(tag, value);
     return (true);
