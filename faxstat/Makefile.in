@@ -55,4 +55,4 @@ faxstat: ${OBJECTS} ${LIBS}
 	${C++F} -o $@ ${OBJECTS} ${LDFLAGS}
 
 install: default
-	${INSTALL} -F ${BIN} -m 755 -idb ${PRODUCT}.sw.client -O faxstat
+	${INSTALL} -F ${DESTDIR}${BIN} -m 755 -idb ${PRODUCT}.sw.client -O faxstat

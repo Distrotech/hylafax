@@ -55,6 +55,6 @@ faxmail: ${OBJECTS} ${LIBS}
 	${C++F} -o $@ ${OBJECTS} ${LDFLAGS}
 
 install: default
-	${INSTALL} -F ${BIN} -m 755 -idb ${PRODUCT}.sw.client -O faxmail
-	${INSTALL} -F ${LIBDATA} -m 444 -idb ${PRODUCT}.sw.client \
+	${INSTALL} -F ${DESTDIR}${BIN} -m 755 -idb ${PRODUCT}.sw.client -O faxmail
+	${INSTALL} -F ${DESTDIR}${LIBDATA} -m 444 -idb ${PRODUCT}.sw.client \
 	    -src ${SRCDIR}/faxmail.ps -O faxmail.ps

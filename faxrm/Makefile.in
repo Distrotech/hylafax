@@ -55,4 +55,4 @@ faxrm: faxrm.o ${LIBS}
 	${C++F} -o $@ faxrm.o ${LDFLAGS}
 
 install: default
-	${INSTALL} -F ${BIN} -m 755 -idb ${PRODUCT}.sw.client -O faxrm
+	${INSTALL} -F ${DESTDIR}${BIN} -m 755 -idb ${PRODUCT}.sw.client -O faxrm

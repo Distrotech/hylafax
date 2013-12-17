@@ -223,26 +223,26 @@ update-po::
 makeClientDirs::
 	-${INSTALL} -u ${SYSUSER} -g ${SYSGROUP} -m ${DIRMODE} \
 	    -idb hylafax.sw.client -dir \
-	    ${BIN} ${LIBDATA} ${LIBEXEC} ${SBIN}
+	    ${DESTDIR}${BIN} ${DESTDIR}${LIBDATA} ${DESTDIR}${LIBEXEC} ${DESTDIR}${SBIN} ${DESTDIR}${MAN}/man1 ${DESTDIR}${MAN}/man5 ${DESTDIR}${MAN}/man8
 makeServerDirs::
 	-${INSTALL} -u ${SYSUSER} -g ${SYSGROUP} -m ${DIRMODE} \
-	    -idb hylafax.sw.server -dir ${SBIN};
+	    -idb hylafax.sw.server -dir ${DESTDIR}${SBIN};
 	-${INSTALL} -u ${FAXUSER} -g ${FAXGROUP} -m ${DIRMODE} \
-	    -idb hylafax.sw.server -dir ${SPOOL}
+	    -idb hylafax.sw.server -dir ${DESTDIR}${SPOOL}
 	-${INSTALL} -u ${FAXUSER} -g ${FAXGROUP} -m ${DIRMODE} \
 	    -idb hylafax.sw.server -dir \
-	    -F ${SPOOL} bin client config dev etc info log recvq status
+	    -F ${DESTDIR}${SPOOL} bin client config dev etc info log recvq status
 	-${INSTALL} -u ${FAXUSER} -g ${FAXGROUP} -m 700 \
 	    -idb hylafax.sw.server -dir \
-	    -F ${SPOOL} sendq doneq docq tmp pollq archive
+	    -F ${DESTDIR}${SPOOL} sendq doneq docq tmp pollq archive
 makeDirs: makeClientDirs makeServerDirs
 
 makeDevices::
 	${INSTALL} -u ${FAXUSER} -g ${FAXGROUP} -m 600 -fifo \
-	    -idb hylafax.sw.server -F ${SPOOL} FIFO
+	    -idb hylafax.sw.server -F ${DESTDIR}${SPOOL} FIFO
 
 install: makeDirs makeDevices
-	${INSTALL} -m 444 -F ${SPOOL} -idb hylafax.sw.server \
+	${INSTALL} -m 444 -F ${DESTDIR}${SPOOL} -idb hylafax.sw.server \
 	    -src ${SRCDIR}/COPYRIGHT -O COPYRIGHT
 	@if [ "@REGEX@" = yes ]; then \
 	    ${ECHO} "= "regex; cd regex; ${MAKE} install  ||  exit 1; \
@@ -250,38 +250,38 @@ install: makeDirs makeDevices
 	    true; \
 	fi
 	@for i in ${DIRS}; do \
-	    (${ECHO} "= "$$i; cd $$i; ${MAKE} install)  ||  exit 1; \
+	    (${ECHO} "= "$$i; cd $$i; ${MAKE} DESTDIR=${DESTDIR} install)  ||  exit 1; \
 	done
 	@if [ "@SGI2FAX@" = yes ]; then \
-	    ${ECHO} "= "sgi2fax; cd sgi2fax; ${MAKE} install  ||  exit 1; \
+	    ${ECHO} "= "sgi2fax; cd sgi2fax; ${MAKE} DESTDIR=${DESTDIR} install  ||  exit 1; \
 	else \
 	    true; \
 	fi
 	@if [ "@DSO@" != no ]; then \
 	    for i in ${DSODIRS}; do \
-		(${ECHO} "= "$$i; cd $$i; ${MAKE} installDSO)  ||  exit 1; \
+		(${ECHO} "= "$$i; cd $$i; ${MAKE} DESTDIR=${DESTDIR} installDSO)  ||  exit 1; \
 	    done; \
 	else \
 	    true; \
 	fi
 	@${ECHO} "= "etc; cd etc; ${MAKE} installSysVInit;
 	@if [ "@DPS@" = yes ]; then \
-	    ${ECHO} "= "dps; cd dps; ${MAKE} install  ||  exit 1; \
+	    ${ECHO} "= "dps; cd dps; ${MAKE} DESTDIR=${DESTDIR} install  ||  exit 1; \
 	else \
 	    true; \
 	fi
 	@if [ "@IMP@" = yes ]; then \
-	    ${ECHO} "= "imp; cd imp; ${MAKE} install  ||  exit 1; \
+	    ${ECHO} "= "imp; cd imp; ${MAKE} DESTDIR=${DESTDIR} install  ||  exit 1; \
 	else \
 	    true; \
 	fi
 	@if [ "@GS@" = yes ]; then \
-	    ${ECHO} "= "gs; cd gs; ${MAKE} install  ||  exit 1; \
+	    ${ECHO} "= "gs; cd gs; ${MAKE} DESTDIR=${DESTDIR} install  ||  exit 1; \
 	else \
 	    true; \
 	fi
 	@if [ "@NLS@" = yes ]; then \
-	    ${ECHO} "= po"; cd po; ${MAKE} install  ||  exit 1; \
+	    ${ECHO} "= po"; cd po; ${MAKE} install  DESTDIR=${DESTDIR} ||  exit 1; \
 	else \
 	    true; \
 	fi
@@ -298,25 +298,25 @@ CLIENTDIRS=\
 
 installClient: makeClientDirs
 	@for i in ${CLIENTDIRS}; do \
-	    (${ECHO} "= "$$i; cd $$i; ${MAKE} install)  ||  exit 1; \
+	    (${ECHO} "= "$$i; cd $$i; ${MAKE} DESTDIR=${DESTDIR} install)  ||  exit 1; \
 	done
 	@if [ "@SGI2FAX@" = yes ]; then \
-	    ${ECHO} "= "sgi2fax; cd sgi2fax; ${MAKE} install  ||  exit 1; \
+	    ${ECHO} "= "sgi2fax; cd sgi2fax; ${MAKE} DESTDIR=${DESTDIR} install  ||  exit 1; \
 	else \
 	    true; \
 	fi
 	@for i in etc util man; do \
-	    (${ECHO} "= "$$i; cd $$i; ${MAKE} installClient)  ||  exit 1; \
+	    (${ECHO} "= "$$i; cd $$i; ${MAKE} DESTDIR=${DESTDIR} installClient)  ||  exit 1; \
 	done
 	@if [ "@DSO@" != no ]; then \
 	    for i in libhylafax; do \
-		(${ECHO} "= "$$i; cd $$i; ${MAKE} installDSO)  ||  exit 1; \
+		(${ECHO} "= "$$i; cd $$i; ${MAKE} DESTDIR=${DESTDIR} installDSO)  ||  exit 1; \
 	    done; \
 	else \
 	    true; \
 	fi
 	@if [ "@NLS@" = yes ]; then \
-	    (${ECHO} "= po"; cd po; ${MAKE} installClient) ||  exit 1; \
+	    (${ECHO} "= po"; cd po; ${MAKE} DESTDIR=${DESTDIR} installClient) ||  exit 1; \
 	else \
 	    true; \
 	fi
@@ -327,7 +327,7 @@ package::
 product::
 	test -d dist || ${MKDIR} dist
 	${RM} -f dist/rawidb
-	SRC=`${PWDCMD}` RAWIDB=`${PWDCMD}`/dist/rawidb ${MAKE} install
+	SRC=`${PWDCMD}` RAWIDB=`${PWDCMD}`/dist/rawidb ${MAKE} DESTDIR=${DESTDIR} install
 	${RM} -f dist/idb
 	${SORT} -u +4 dist/rawidb > dist/idb
 	${GENDIST} -v -dist dist -idb dist/idb -sbase `pwd` -spec ${SRCDIR}/dist/hylafax.dist

@@ -55,4 +55,4 @@ sendpage: ${OBJECTS} ${LIBS}
 	${C++F} -o $@ ${OBJECTS} ${LDFLAGS}
 
 install: default
-	${INSTALL} -F ${BIN} -m 755 -idb ${PRODUCT}.sw.client -O sendpage
+	${INSTALL} -F ${DESTDIR}${BIN} -m 755 -idb ${PRODUCT}.sw.client -O sendpage

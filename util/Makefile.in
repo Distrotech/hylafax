@@ -117,18 +117,16 @@ checkat: checkat.o ${LIBS}
 PUTCLIENT	= ${INSTALL} -idb ${PRODUCT}.sw.client
 PUTSERVER	= ${INSTALL} -idb ${PRODUCT}.sw.server
 PUTSERV		= ${PUTSERVER} -m 755
-PUTSUPD		= ${PUTSERVER} -F ${SPOOL}/bin -idb "config(update)"
-PUTSBIN		= ${PUTSERVER} -F ${SBIN}
+PUTSUPD		= ${PUTSERVER} -F ${DESTDIR}${SPOOL}/bin -idb "config(update)"
+PUTSBIN		= ${PUTSERVER} -F ${DESTDIR}${SBIN}
 
 installClient: default
-	${PUTCLIENT} -F ${LIBEXEC} -m 755 -O textfmt
-	${PUTCLIENT} -F ${LIBEXEC} -m 755 -O typetest
+	${PUTCLIENT} -F ${DESTDIR}${LIBEXEC} -m 755 -O textfmt
+	${PUTCLIENT} -F ${DESTDIR}${LIBEXEC} -m 755 -O typetest
 
 install: installClient
-	${PUTSBIN} -m 755 -O faxmsg faxadduser faxconfig faxdeluser faxmodem \
-        faxstate faxwatch faxinfo tiffcheck
-	${PUTSBIN} -idb ${PRODUCT}.sw.server \
-	    -ln ${SBIN}/faxmsg -O faxabort faxanswer faxquit faxlock
+	${PUTSBIN} -m 755 -O faxmsg faxadduser faxconfig faxdeluser faxmodem faxstate faxwatch faxinfo tiffcheck
+	${PUTSBIN} -idb ${PRODUCT}.sw.server -ln ${DESTSIR}${SBIN}/faxmsg -O faxabort faxanswer faxquit faxlock
 	${PUTSBIN} -m 755 -O dialtest typetest
 	${PUTSBIN} -m 755 -src xferfaxstats.sh -O xferfaxstats
 	${PUTSBIN} -m 755 -src recvstats.sh -O recvstats
@@ -153,10 +151,8 @@ install: installClient
 	${PUTSUPD} -m 755 -src pollrcvd.sh -O pollrcvd
 	${PUTSUPD} -m 755 -src mkcover.sh -O mkcover
 	${PUTSUPD} -m 755 -src wedged.sh -O wedged
-	${PUTSERVER} -F ${SPOOL}/etc -m 444 -idb "config(update)" \
-	    -src ${SRCDIR}/dpsprinter.ps -O dpsprinter.ps
-	${PUTSERVER} -F ${SPOOL}/etc -idb "config(suggest)" \
-	    -m 444 -src ${SRCDIR}/cover.templ -O cover.templ
+	${PUTSERVER} -F ${DESTDIR}${SPOOL}/etc -m 444 -idb "config(update)" -src ${SRCDIR}/dpsprinter.ps -O dpsprinter.ps
+	${PUTSERVER} -F ${DESTDIR}${SPOOL}/etc -idb "config(suggest)" -m 444 -src ${SRCDIR}/cover.templ -O cover.templ
 
 #
 # These targets are created during the configuration procedure.

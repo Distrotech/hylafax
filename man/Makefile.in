@@ -141,10 +141,10 @@ targets:: ${TARGETS}
 
 @MAKEINCLUDE@ @MAKELQUOTE@${COMMONRULES}@MAKERQUOTE@
 
-cman.apps: ${_FORCE}; test -d $@ || ${MKDIR} $@
-cman.files: ${_FORCE}; test -d $@ || ${MKDIR} $@
-sman.apps: ${_FORCE}; test -d $@ || ${MKDIR} $@
-sman.files: ${_FORCE}; test -d $@ || ${MKDIR} $@
+cman.apps: ${_FORCE}; test -d $@ || ${MKDIR} -p $@
+cman.files: ${_FORCE}; test -d $@ || ${MKDIR} -p $@
+sman.apps: ${_FORCE}; test -d $@ || ${MKDIR} -p $@
+sman.files: ${_FORCE}; test -d $@ || ${MKDIR} -p $@
 
 
 # We can't have a "patter/inferred rule" for any of these, because
@@ -228,7 +228,7 @@ cman.apps/Makefile: ${DEPTH}/defs cman.apps ${MANCAPP}
 	 ${ECHO} 'install:';						\
 	 (cd cman.apps; for i in *.1; do				\
 	    f=${MANCAPPNAME};						\
-	    ${ECHO} '	$${INSTALL} -m 444 -F $${MAN}/$${MANAPPS}	\
+	    ${ECHO} '	$${INSTALL} -m 444 -F $${DESTDIR}$${MAN}/$${MANAPPS}	\
 		-idb $${PRODUCT}.man.client -src' "$$i" '-O' "$$f";	\
 	 done)								\
 	)>cman.apps/Makefile
@@ -240,7 +240,7 @@ cman.files/Makefile: ${DEPTH}/defs cman.files ${MANCFILE}
 	 ${ECHO} 'install:';						\
 	 (cd cman.files; for i in *.4f; do				\
 	    f=${MANCFILENAME};						\
-	    ${ECHO} '	$${INSTALL} -m 444 -F $${MAN}/$${MANFILES}	\
+	    ${ECHO} '	$${INSTALL} -m 444 -F $${DESTDIR}$${MAN}/$${MANFILES}	\
 		-idb $${PRODUCT}.man.client -src' "$$i" '-O' "$$f";	\
 	 done)								\
 	)>cman.files/Makefile
@@ -252,7 +252,7 @@ sman.apps/Makefile: ${DEPTH}/defs sman.apps ${MANSAPP}
 	 ${ECHO} 'install:';						\
 	 (cd sman.apps; for i in *.1m; do				\
 	    f=${MANSAPPNAME};						\
-	    ${ECHO} '	$${INSTALL} -m 444 -F $${MAN}/$${MANSYS}	\
+	    ${ECHO} '	$${INSTALL} -m 444 -F $${DESTDIR}$${MAN}/$${MANSYS}	\
 		-idb $${PRODUCT}.man.server -src' "$$i" '-O' "$$f";	\
 	 done)								\
 	)>sman.apps/Makefile
@@ -264,20 +264,20 @@ sman.files/Makefile: ${DEPTH}/defs sman.files ${MANSFILE}
 	 ${ECHO} 'install:';						\
 	 (cd sman.files; for i in *.4f; do				\
 	    f=${MANSFILENAME};						\
-	    ${ECHO} '	$${INSTALL} -m 444 -F $${MAN}/$${MANFILES}	\
+	    ${ECHO} '	$${INSTALL} -m 444 -F $${DESTDIR}$${MAN}/$${MANFILES}	\
 		-idb $${PRODUCT}.man.server -src' "$$i" '-O' "$$f";	\
 	 done)								\
 	)>sman.files/Makefile
 
 installClientManPages:: cman.apps/Makefile cman.files/Makefile
 	-${INSTALL} -m ${DIRMODE} -dir -idb hylafax.man.client \
-	    ${MAN} ${MAN}/${MANAPPS} ${MAN}/${MANFILES}
+	    ${MAN} ${MAN}/${MANAPPS} ${DESTDIR}${MAN}/${MANFILES}
 	cd cman.apps; ${MAKE} install
 	cd cman.files; ${MAKE} install
 
 installServerManPages:: sman.apps/Makefile sman.files/Makefile
 	-${INSTALL} -m ${DIRMODE} -dir -idb hylafax.man.server \
-	    ${MAN} ${MAN}/${MANSYS} ${MAN}/${MANFILES}
+	    ${MAN} ${MAN}/${MANSYS} ${DESTDIR}${MAN}/${MANFILES}
 	cd sman.apps; ${MAKE} install
 	cd sman.files; ${MAKE} install
 

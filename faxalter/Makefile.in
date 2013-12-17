@@ -55,4 +55,4 @@ faxalter: faxalter.o ${LIBS}
 	${C++F} -o $@ faxalter.o ${LDFLAGS}
 
 install: default
-	${INSTALL} -F ${BIN} -m 755 -idb ${PRODUCT}.sw.client -O faxalter
+	${INSTALL} -F ${DESTDIR}${BIN} -m 755 -idb ${PRODUCT}.sw.client -O faxalter

@@ -34,15 +34,15 @@ libhylafax-${ABI_VERSION}.${DSO}: libhylafax-${ABI_VERSION}.${DSO}.${ABI_PATCH}
 	ln -sf $< $@
 
 libhylafax-${ABI_VERSION}.${DSO}.${ABI_PATCH}:	${OBJECTS}
-	${C++} ${DSOOPTS} -o $@ ${OBJECTS} \
+	${C++} ${C++FLAGS} ${DSOOPTS} -o $@ ${OBJECTS} \
 	    ${DSODELAY} ${LIBTIFF} ${DSODELAY} ${LIBZ} ${DSODELAY} ${LIBREGEX} \
 	    ${MACHDEPLIBS}
 
 #../util/libhylafax-${ABI_VERSION}.${DSO}: libhylafax-${ABI_VERSION}.${DSO}
 
 installDSO: libhylafax-${ABI_VERSION}.${DSO}.${ABI_PATCH}
-	${PUTCLIENT} -F ${LIBDIR} -m 755 -O libhylafax-${ABI_VERSION}.${DSO}.${ABI_PATCH}
-	#${PUTCLIENT} -F ${LIBDIR} -O -lns libhylafax-${ABI_VERSION}.${DSO}.${ABI_PATCH} libhylafax-${ABI_VERSION}.${DSO}
+	${PUTCLIENT} -F ${DESTDIR}${LIBDIR} -m 755 -O libhylafax-${ABI_VERSION}.${DSO}.${ABI_PATCH}
+	#${PUTCLIENT} -F ${DESTDIR}${LIBDIR} -O -lns libhylafax-${ABI_VERSION}.${DSO}.${ABI_PATCH} libhylafax-${ABI_VERSION}.${DSO}
 
 cleanDSO::
 	-${RM} -f libhylafax-${ABI_VERSION}.${DSO}.${ABI_PATCH}

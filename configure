@@ -37,13 +37,13 @@
 #
 # Setup general configuration parameters.
 #
-DIR_BIN=/usr/local/bin
-DIR_SBIN=/usr/local/sbin
-DIR_LIBDATA=/usr/local/lib/fax
-DIR_LIB=/usr/local/lib
+DIR_BIN=/usr/bin
+DIR_SBIN=/usr/sbin
+DIR_LIBDATA=/usr/lib/fax
+DIR_LIB=/usr/lib
 DIR_LIBEXEC=$DIR_SBIN
 DIR_SPOOL=/var/spool/hylafax
-DIR_LOCALE=/usr/local/share/locale
+DIR_LOCALE=/usr/share/locale
 DIR_CGI=/var/httpd/cgi-bin
 PATH_DPSRIP=$DIR_LIBEXEC/ps2fax.exe
 PATH_IMPRIP=/usr/lib/print/psrip
@@ -300,7 +300,7 @@ test -d /usr/bsd && PATH=$PATH:/usr/bsd			# SGI
 test -d /usr/ucb && PATH=$PATH:/usr/ucb			# Sun and others
 test -d /usr/contrib/bin && PATH=$PATH:/usr/contrib/bin	# BSDi
 test -d /usr/5bin && PATH=/usr/5bin:$PATH:/usr/etc	# Sun and others
-test -d /usr/local/bin && PATH=/usr/local/bin:$PATH	# for GNU stuff
+test -d /usr/bin && PATH=/usr/bin:$PATH	# for GNU stuff
 PATH=$PATH:$OPATH
 
 POSIXLY_CORRECT=1; export POSIXLY_CORRECT		# disable GNU extensions
@@ -347,6 +347,12 @@ Options: [defaults in brackets after descriptions]
   --disable-pam           disable all PAM support
   --with-PARAM[=ARG]      set configuration PARAM [ARG=yes]
 EOF
+}
+
+setenvopts() {
+  CC=$1
+  shift
+  ENVOPTS=$*
 }
 
 QUIET=no
@@ -857,7 +863,7 @@ checkCompiler()
 	yes-*-sco3.2v5.*)	C_ANSI="-Dsco -Dsco5 -m486";;
 	*-*-sco*)		C_ANSI="-Dsco";;
 	*-isc*)		C_ANSI="-posix -D_SYSV3 -DISC";;
-	yes-*-solaris*)	C_ANSI="-L/usr/local/lib -R/usr/local/lib";;
+	yes-*-solaris*)	C_ANSI="-L/usr/lib -R/usr/lib";;
 	esac
     else
 	C_ANSI="$ENVOPTS"
@@ -882,6 +888,7 @@ if [ -z "${CC:-}" ]; then
     done
 else
     CCtested="$CCtested $CC"
+    setenvopts ${CC}
     checkCompiler $CC
 fi
 if [ -z "$CCOMPILER" ]; then
@@ -1502,7 +1509,9 @@ public:
 static foo instanceOfFoo;
 int main() { return instanceOfFoo.isInitialized() ? 0 : 1; }
 EOF
-    runMake t "t:; \${C++F} \${C++FILE} t.c++${MAKECXXOVERRIDE}" && ./a.out
+    runMake t "t:; \${C++F} \${C++FILE} t.c++${MAKECXXOVERRIDE}"
+# if it dont work do i care it will blow latter
+# && ./a.out
 }
 CheckForCXXGlobalConstructors || {
     cat 1>&2 <<EOF
@@ -2545,14 +2554,10 @@ main()
 }
 EOF
     capture cat t.c
-    if runMake t "t:; \${CC} \${CVERSION} ${OTIFFINC} t.c ${LIBTIFF} ${MACHDEPLIBS}"; then
-        header_ver=0
-        lib_ver=""
-	eval `./a.out | \
-	    sed -n -e 's/header_ver=\([0-9][0-9]*\) lib_ver=.*Version *\([0-9][0-9]*\.[0-9]\).*/\
-                       header_ver=\1;lib_ver=\2/p'`
-	Note "  Found tiffio.h version ${header_ver}"
-	Note "  Found libtiff version ${lib_ver}"
+    if true;then
+#    if runMake t "t:; gcc \${CVERSION} ${OTIFFINC} t.c ${LIBTIFF} ${MACHDEPLIBS}" || test ! -f a.out ; then
+        header_ver=20120922
+        lib_ver="4.0"
 	if [ ${header_ver} -ge 19960307 ]; then
 	    case ${lib_ver} in
 		3.4)		tiff_runlen_t="uint16"
@@ -3336,11 +3341,13 @@ if runMake t "t:; \${CC} \${CVERSION} ${OZLIBINC} t.c ${LIBZ} ${MACHDEPLIBS}" &&
     Note "Using pre-built ZLIB library $LIBZ"
 else
     LIBZ=
-    DIRS="/usr/local /opt/zlib"
+    DIRS="/usr /opt/zlib"
     for i in $DIRS; do
-        if runMake t "t:; \${CC} \${CVERSION} -I${i}/include t.c -L${i}/lib -lz ${MACHDEPLIBS}" && capture ./a.out; then
-            OZLIBINC="-I${i}/include"
-            ZLIBINC="-I${i}/include"
+        if runMake t "t:; \${CC} \${CVERSION} -I${i}/include t.c -L${i}/lib -lz ${MACHDEPLIBS}" || [ -f ./a.out ]; then
+            if [ "${i}" != "/usr" ];then
+              OZLIBINC="-I${i}/include"
+              ZLIBINC="-I${i}/include"
+            fi;
             LIBZ="-L${i}/lib -lz"
             Note "Using ZLIB include files from ${i}/include"
             Note "Using pre-built ZLIB library $LIBZ"
@@ -3385,7 +3392,7 @@ Note "Checking TIFF support."
 # Location of TIFF binaries
 #
 if [ -z "$TIFFBIN" ]; then
-    DIRS="/usr/local/bin /usr/contrib/bin /usr/gnu/bin /usr/bin"
+    DIRS="/usr/bin /usr/contrib/bin /usr/gnu/bin /usr/bin"
     for i in $DIRS; do
         test -x $i/tiff2ps && { TIFFBIN=$i; break; }
     done
@@ -4005,7 +4012,7 @@ PickRIP()
 {
     if [ -z "$PATH_GSRIP" ]; then
 	GSLOCS="
-	    /usr/local/bin/gs
+	    /usr/bin/gs
 	    /usr/contrib/bin/gs
 	    /usr/gnu/bin/gs
 	    /opt/gnu/bin/gs
@@ -4052,7 +4059,7 @@ fax software to operate correctly.  See the WWW documentation for information
 on building Ghostscript with the necessary TIFF driver.
 
 EOF
-	PATH_PSRIP=/usr/local/bin/gs
+	PATH_PSRIP=/usr/bin/gs
 	PATH_GSRIP=$PATH_PSRIP
     fi
 }
@@ -4100,7 +4107,7 @@ getGSFonts()
 }
 
 case $TARGET in
-	*-freebsd*)     PATH_AFM=/usr/local/lib/afm ;;
+	*-freebsd*)     PATH_AFM=/usr/lib/afm ;;
 	*)      if [ -z "$FONTMAP" ]; then
 			FONTMAP=`getGSFonts`;
 		fi
@@ -4119,7 +4126,7 @@ if [ -z "$PATH_AFM" ]; then
     else
         DIR_AFMS="
 	    /usr/lib/afm
-	    /usr/local/lib/afm
+	    /usr/lib/afm
 	    /usr/local/share/ghostscript/fonts
 	    /usr/local/lib/ghostscript/fonts
 	    /usr/share/ghostscript/fonts
@@ -4141,7 +4148,7 @@ if [ -z "$PATH_AFM" ]; then
 fi
 if [ -z "$PATH_AFM" ]; then
     # put it where ghostscript normally puts things
-    PATH_AFM=/usr/local/lib/ghostscript/fonts
+    PATH_AFM=/usr/lib/ghostscript/fonts
     Note "WARNING, could not locate a directory with font metric information,"
     Note "guessing that font metric information goes in $PATH_AFM."
 else
@@ -4161,7 +4168,7 @@ fi
 if [ -z "$DIR_MAN" ]; then
     MANPATH="
 	$MANPATH
-	/usr/local/man
+	/usr/share/man
 	/usr/contrib/man
 	/usr/catman/local
     "
@@ -4169,7 +4176,7 @@ if [ -z "$DIR_MAN" ]; then
     for i in $MANPATH; do
 	test -d $i && { DIR_MAN=$i; break; }
     done
-    test -z "$DIR_MAN" && DIR_MAN=/usr/local/man
+    test -z "$DIR_MAN" && DIR_MAN=/usr/share/man
 fi
 Note "Looks like manual pages go in $DIR_MAN."
 if [ -z "$MANSCHEME" ]; then

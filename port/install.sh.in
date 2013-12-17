@@ -108,7 +108,7 @@ do
     -o)		SaveFirst=yes;;
     -O)		RemoveFirst=yes; SaveFirst=yes;;
     -root)	shift; ROOT=$1;;
-    -dir)	CMD="@MKDIR@"; HasSource=no;
+    -dir)	CMD="@MKDIR@ -p"; HasSource=no;
 		RM=":"; STRIP=":"
 		objectExists()
 		{

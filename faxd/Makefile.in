@@ -181,7 +181,7 @@ LDIRT	= hash.h mkhash libfaxserver*
 hash.h:	mkhash
 	rm -f hash.h; ./mkhash > hash.h
 mkhash:	${SRCDIR}/mkhash.c
-	${CCF} -o mkhash ${SRCDIR}/mkhash.c
+	${HOSTCC} -I../ -o mkhash ${SRCDIR}/mkhash.c
 
 faxQueueApp.o FaxRecv.o:
 incdepend: hash.h
@@ -214,6 +214,6 @@ trigtest: trigtest.o libfaxserver-${ABI_VERSION}.a ${LIBS}
 PUTSERV=${INSTALL} -idb ${PRODUCT}.sw.server
 
 install: default
-	${PUTSERV} -F ${SBIN} -m 755 -O faxq faxqclean
-	${PUTSERV} -F ${LIBEXEC} -m 755 -O faxgetty faxsend pagesend
-	${PUTSERV} -F ${SBIN} -m 755 -O tsitest tagtest cqtest choptest
+	${PUTSERV} -F ${DESTDIR}${SBIN} -m 755 -O faxq faxqclean
+	${PUTSERV} -F ${DESTDIR}${LIBEXEC} -m 755 -O faxgetty faxsend pagesend
+	${PUTSERV} -F ${DESTDIR}${SBIN} -m 755 -O tsitest tagtest cqtest choptest

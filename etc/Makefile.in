@@ -79,32 +79,32 @@ PUTSAMPLE	= ${PUTSERVER} -u ${FAXUSER} -g ${FAXGROUP} \
 		  -idb "config(noupdate)"
 
 install: default
-	${PUTSERVER} -F ${SBIN} -m 755 -src faxaddmodem.sh -O faxaddmodem
-	${PUTSERVER} -F ${SBIN} -m 755 -src faxsetup.sh -O faxsetup
+	${PUTSERVER} -F ${DESTDIR}${SBIN} -m 755 -src faxaddmodem.sh -O faxaddmodem
+	${PUTSERVER} -F ${DESTDIR}${SBIN} -m 755 -src faxsetup.sh -O faxsetup
 	for i in bsdi irix linux; do \
-	    ${PUTSERVER} -F ${SBIN} -m 755 \
+	    ${PUTSERVER} -F ${DESTDIR}${SBIN} -m 755 \
 		-src ${SRCDIR}/faxsetup.$$i -O faxsetup.$$i; \
 	done
-	${PUTSERVER} -F ${SBIN} -m 755 -src probemodem.sh -O probemodem
-	${PUTSAMPLE} -F ${SPOOL}/etc -m 644 -o xferfaxlog
-	${PUTSAMPLE} -F ${SPOOL}/etc -m 600 -o hosts.hfaxd
+	${PUTSERVER} -F ${DESTDIR}${SBIN} -m 755 -src probemodem.sh -O probemodem
+	${PUTSAMPLE} -F ${DESTDIR}${SPOOL}/etc -m 644 -o xferfaxlog
+	${PUTSAMPLE} -F ${DESTDIR}${SPOOL}/etc -m 600 -o hosts.hfaxd
 	for i in ${DIALRULES}; do \
-	    ${PUTSERVER} -F ${SPOOL}/etc -m 444 -src ${SRCDIR}/$$i \
+	    ${PUTSERVER} -F ${DESTDIR}${SPOOL}/etc -m 444 -src ${SRCDIR}/$$i \
 		-idb "config(update)" -O $$i; \
 	done
-	${PUTSERVER} -F ${LIBEXEC} -m 755 -O lockname ondelay
-	${PUTSAMPLE} -F ${SPOOL}/etc -m 644 -idb nostrip \
+	${PUTSERVER} -F ${DESTDIR}${LIBEXEC} -m 755 -O lockname ondelay
+	${PUTSAMPLE} -F ${DESTDIR}${SPOOL}/etc -m 644 -idb nostrip \
 	    -src ${SRCDIR}/lutRS18.pcf -O lutRS18.pcf
 	${INSTALL} -u ${FAXUSER} -g ${FAXGROUP} -m ${DIRMODE} \
-	    -idb hylafax.sw.server -dir -F ${SPOOL}/etc templates
-	${PUTSAMPLE} -F ${SPOOL}/etc/templates -m 644 \
+	    -idb hylafax.sw.server -dir -F ${DESTDIR}${SPOOL}/etc templates
+	${PUTSAMPLE} -F ${DESTDIR}${SPOOL}/etc/templates -m 644 \
 	    -src ${SRCDIR}/templates/README -O README
 	@for d in ${TEMPLATES}; do \
 		${ECHO} "Installing templates/$$d"; \
 		${INSTALL} -u ${FAXUSER} -g ${FAXGROUP} -m ${DIRMODE} \
-		    -idb hylafax.sw.server -dir -F ${SPOOL}/etc/templates $$d; \
+		    -idb hylafax.sw.server -dir -F ${DESTDIR}${SPOOL}/etc/templates $$d; \
 		for f in ${SRCDIR}/templates/$$d/*; do \
-			${PUTSAMPLE} -F ${SPOOL}/etc/templates/$$d -m 644 -src $$f `basename $$f`; \
+			${PUTSAMPLE} -F ${DESTDIR}${SPOOL}/etc/templates/$$d -m 644 -src $$f `basename $$f`; \
 		done; \
 	done;
 	
@@ -117,20 +117,20 @@ installSysVInit: hylafax
 	    echo "checking ${DIR_SYSVINITSTART} directories"; \
 	    for i in ${DIR_SYSVINITSTART}; do \
 		if test -d ${DIR_SYSVINIT}/$$i; then \
-		    ${PUTSERVER} -F ${DIR_SYSVINIT}/$$i -lns ../`basename ${DIR_SYSVINIT}`/hylafax ${NAME_SYSVINITSTART}; \
+		    ${PUTSERVER} -F ${DESTDIR}${DIR_SYSVINIT}/$$i -lns ../`basename ${DIR_SYSVINIT}`/hylafax ${NAME_SYSVINITSTART}; \
 		fi; \
 	    done; \
 	    echo "checking ${DIR_SYSVINITSTOP} directories"; \
 	    for i in ${DIR_SYSVINITSTOP}; do \
 		if test -d ${DIR_SYSVINIT}/$$i; then \
-		    ${PUTSERVER} -F ${DIR_SYSVINIT}/$$i -lns ../`basename ${DIR_SYSVINIT}`/hylafax ${NAME_SYSVINITSTOP}; \
+		    ${PUTSERVER} -F ${DESTDIR}${DIR_SYSVINIT}/$$i -lns ../`basename ${DIR_SYSVINIT}`/hylafax ${NAME_SYSVINITSTOP}; \
 		fi; \
 	    done; \
 	else \
-	    ${PUTSERVER} -F ${SBIN} -m 755 hylafax; \
+	    ${PUTSERVER} -F ${DESTDIR}${SBIN} -m 755 hylafax; \
 	fi
 	if test -d /etc/config; then \
-	    ${PUTSERVER} -F /etc/config -m 644 -src config.fax -O fax; \
+	    ${PUTSERVER} -F ${DESTDIR}/etc/config -m 644 -src config.fax -O fax; \
 	fi
 
 installClient: default

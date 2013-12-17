@@ -81,8 +81,8 @@ libhylafax-${ABI_VERSION}.a: ${OBJECTS}
 PUTCLIENT	= ${INSTALL} -idb ${PRODUCT}.sw.client
 
 install: default
-	${PUTCLIENT} -F ${LIBDATA} -m 444 -O pagesizes
-	${PUTCLIENT} -F ${LIBDATA} -m 444 -src ${SRCDIR}/typerules -O typerules
+	${PUTCLIENT} -F ${DESTDIR}${LIBDATA} -m 444 -O pagesizes
+	${PUTCLIENT} -F ${DESTDIR}${LIBDATA} -m 444 -src ${SRCDIR}/typerules -O typerules
 
 
 @MAKEDSOINCLUDE@ @MAKELQUOTE@${SRCDIR}/Makefile.@DSO@dso@MAKERQUOTE@
